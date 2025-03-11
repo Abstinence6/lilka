@@ -42,6 +42,7 @@ FileManagerApp::FileManagerApp(const String& path) :
         "Файловий менеджер", 0, 0U, "", FM_CALLBACK_CAST(onFileOpenWithFileManager), FM_CALLBACK_PTHIS
     );
     fileOpenWithMenu.addItem("Емулятор NES", 0, 0U, "", FM_CALLBACK_CAST(onFileOpenWithNESEmulator), FM_CALLBACK_PTHIS);
+    fileOpenWithMenu.addItem("Емулятор SEGA", 0, 0U, "", FM_CALLBACK_CAST(onFileOpenWithSEGAEmulator), FM_CALLBACK_PTHIS);
     fileOpenWithMenu.addItem(
         "Загрузчик прошивок", 0, 0U, "", FM_CALLBACK_CAST(onFileOpenWithMultiBootLoader), FM_CALLBACK_PTHIS
     );
@@ -190,6 +191,10 @@ FMEntry FileManagerApp::pathToEntry(const String& path) {
         newEntry.type = FT_NES_ROM;
         newEntry.icon = FT_NES_ICON;
         newEntry.color = FT_NES_ROM_COLOR;
+    } else if (lowerCasedPath.endsWith(".gen")) {
+        newEntry.type = FT_SEGA_ROM;
+        newEntry.icon = FT_NES_ICON;
+        newEntry.color = FT_NES_ROM_COLOR;
     } else if (lowerCasedPath.endsWith(".bin")) {
         newEntry.type = FT_BIN;
         newEntry.icon = FT_BIN_ICON;
@@ -233,6 +238,9 @@ void FileManagerApp::openCurrentEntry() {
     switch (currentEntry.type) {
         case FT_NES_ROM:
             FM_DEFAULT_FT_NES_HANDLER(path);
+            break;
+        case FT_SEGA_ROM:
+            FM_DEFAULT_FT_SEGA_HANDLER(path);
             break;
         case FT_BIN:
             FM_DEFAULT_FT_BIN_HANDLER(path);
@@ -356,6 +364,14 @@ void FileManagerApp::onFileOpenWithNESEmulator() {
     auto button = fileOpenWithMenu.getButton();
     if (button == FM_OKAY_BUTTON) {
         AppManager::getInstance()->runApp(new NesApp(lilka::fileutils.joinPath(currentEntry.path, currentEntry.name)));
+    } else if (button != FM_EXIT_BUTTON) fileOpenWithMenu.isFinished(); // do redraw
+}
+
+void FileManagerApp::onFileOpenWithSEGAEmulator() {
+    FM_DBG lilka::serial_log("Enter onFileOpenWithSEGAEmulator");
+    auto button = fileOpenWithMenu.getButton();
+    if (button == FM_OKAY_BUTTON) {
+        AppManager::getInstance()->runApp(new GenesisApp(lilka::fileutils.joinPath(currentEntry.path, currentEntry.name)));
     } else if (button != FM_EXIT_BUTTON) fileOpenWithMenu.isFinished(); // do redraw
 }
 

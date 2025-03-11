@@ -57,6 +57,12 @@ void LauncherApp::run() {
     item_t root_item = ITEM::SUBMENU(
         "Головне меню",
         {
+            ITEM::APP(
+                "Браузер SD-карти",
+                [this]() { this->runApp<FileManagerApp>(LILKA_SD_ROOT); },
+                &sdcard_img,
+                lilka::colors::Arylide_yellow
+            ),
             ITEM::SUBMENU(
                 "Додатки",
                 {
@@ -93,12 +99,6 @@ void LauncherApp::run() {
                 },
                 &demos_img,
                 lilka::colors::Pink
-            ),
-            ITEM::APP(
-                "Браузер SD-карти",
-                [this]() { this->runApp<FileManagerApp>(LILKA_SD_ROOT); },
-                &sdcard_img,
-                lilka::colors::Arylide_yellow
             ),
             ITEM::APP(
                 "Браузер SPIFFS",

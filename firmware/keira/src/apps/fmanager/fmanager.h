@@ -52,6 +52,7 @@
 #define FM_SELECTED_FILE_ICON   &selectedfile_img
 // FILE HANDLERS:  ////////////////////////////////////////////////////////////////////////////////////
 #define FM_DEFAULT_FT_NES_HANDLER(X)     AppManager::getInstance()->runApp(new NesApp(X));
+#define FM_DEFAULT_FT_SEGA_HANDLER(X)     AppManager::getInstance()->runApp(new GenesisApp(X));
 #define FM_DEFAULT_FT_BIN_HANDLER(X)     fileLoadAsRom(X);
 #define FM_DEFAULT_LUA_SCRIPT_HANDLER(X) AppManager::getInstance()->runApp(new LuaFileRunnerApp(X));
 #define FT_DEFAULT_JS_SCRIPT_HANDLER(X)  AppManager::getInstance()->runApp(new MJSApp(X));
@@ -107,6 +108,7 @@
 #include "../lua/luarunner.h"
 #include "../mjs/mjsrunner.h"
 #include "../nes/nesapp.h"
+#include "../genesis/genesisapp.h"
 // ICONS:
 #include "../icons/normalfile.h"
 #include "../icons/folder.h"
@@ -124,13 +126,15 @@
 #define MAKE_SANDWICH(X) \
     if (0) AppManager::getInstance()->startToast(X)
 
+#define FMANAGER_DEBUG
+
 #ifdef FMANAGER_DEBUG
 #    define FM_DBG if (1)
 #else
 #    define FM_DBG if (0)
 #endif
 
-typedef enum { FT_NONE, FT_NES_ROM, FT_BIN, FT_LUA_SCRIPT, FT_JS_SCRIPT, FT_MOD, FT_LT, FT_DIR, FT_OTHER } FileType;
+typedef enum { FT_NONE, FT_NES_ROM, FT_SEGA_ROM,  FT_BIN, FT_LUA_SCRIPT, FT_JS_SCRIPT, FT_MOD, FT_LT, FT_DIR, FT_OTHER } FileType;
 typedef enum {
     FM_MODE_VIEW, // Standard mode
     FM_MODE_SELECT, // if selectedEntries contain something
@@ -293,6 +297,7 @@ private:
     // Callbacks [fileOpenWithMenu]:
     void onFileOpenWithFileManager();
     void onFileOpenWithNESEmulator();
+    void onFileOpenWithSEGAEmulator();
     void onFileOpenWithMultiBootLoader();
     void onFileOpenWithLua();
     void onFileOpenWithMJS();

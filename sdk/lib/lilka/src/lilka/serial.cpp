@@ -42,8 +42,8 @@ void SerialInterface::unlock() {
 }
 
 void SerialInterface::begin(unsigned long baud) {
-    Serial.begin(baud);
-    Serial.setTimeout(SERIAL_TIMEOUT);
+    Serial0.begin(baud);
+    Serial0.setTimeout(SERIAL_TIMEOUT);
 #ifndef NO_GREETING_MESSAGE
     writeGreetingMessage();
 #endif
@@ -166,16 +166,16 @@ void SerialInterface::run() {
             String outputLine = serialQueue.front();
             size_t len = outputLine.length();
             size_t sent = 0;
-            size_t availableSpace = Serial.availableForWrite();
+            size_t availableSpace = Serial0.availableForWrite();
             while (sent < len) {
                 size_t toSend = (len - sent) > availableSpace ? availableSpace : (len - sent);
-                Serial.write(outputLine.c_str() + sent, toSend);
-                Serial.flush();
+                Serial0.write(outputLine.c_str() + sent, toSend);
+                Serial0.flush();
 
                 sent += toSend;
             }
-            if (outputLine[len - 1] != '\n') Serial.write("\n", 1);
-            Serial.flush();
+            if (outputLine[len - 1] != '\n') Serial0.write("\n", 1);
+            Serial0.flush();
             serialQueue.pop();
         }
         unlock();
@@ -264,8 +264,8 @@ ssize_t SerialInterface::stdio_vfs_read(int fd, void* dst, size_t size) {
         uint8_t* dataPtr = static_cast<uint8_t*>(dst);
         //serial.log("trying to read %d bytes. Waiting for data...", size);
         while (bytesRead < size) {
-            if (Serial.available() > 0) {
-                size_t ReadChunk = Serial.readBytes(dataPtr, size - bytesRead);
+            if (Serial0.available() > 0) {
+                size_t ReadChunk = Serial0.readBytes(dataPtr, size - bytesRead);
                 // move forward
                 dataPtr += ReadChunk;
                 bytesRead += ReadChunk;
