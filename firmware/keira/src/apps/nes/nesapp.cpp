@@ -17,7 +17,7 @@ NesApp::~NesApp() {
 
 void NesApp::run() {
     // Load the ROM
-    Driver::setNesApp(this);
+    Driver::setApp(this);
     nofrendo_main(1, argv);
     // TODO: Figure out how to terminate the emulator without crashing
 }

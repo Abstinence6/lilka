@@ -1,12 +1,12 @@
 #include "driver.h"
 
-NesApp* Driver::app;
+App* Driver::app;
 int16_t Driver::w, Driver::h, Driver::frame_x, Driver::frame_y, Driver::frame_x_offset, Driver::frame_width,
     Driver::frame_height, Driver::frame_line_pixels;
 int64_t Driver::last_render = 0;
 int64_t Driver::last_frame_duration = 0;
 
-void Driver::setNesApp(NesApp* app) {
+void Driver::setApp(App* app) {
     Driver::app = app;
 }
 

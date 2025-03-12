@@ -34,7 +34,6 @@ static int frame_counter = 0;
 static uint16_t muteFrameCount = 0;
 static int frame_buffer_index = 0;
 static uint8_t *frame_buffer = nullptr;
-//**static uint8_t frame_buffer[280*240*2];
 /// BEGIN GWENESIS EMULATOR
 
 extern unsigned char* VRAM;
@@ -143,6 +142,9 @@ extern "C" void gwenesis_io_get_buttons()
 
 /// END GWENESIS EMULATOR
 
+
+#include "apps/nes/driver.h"
+
 void reset_genesis() {
   reset_emulation();
 }
@@ -170,16 +172,13 @@ static void init(uint8_t *romdata, size_t rom_data_size) {
 
   //**espp::EspBox::get().audio_sample_rate(REG1_PAL ? GWENESIS_AUDIO_FREQ_PAL/2 : GWENESIS_AUDIO_FREQ_NTSC/2);
 
- //** */ frame_buffer = frame_buffer_index? espp::EspBox::get().frame_buffer1():espp::EspBox::get().frame_buffer0();
-  lilka::serial_log("gwenesis_vdp_set_buffer");
-  lilka::serial_log((const char*)frame_buffer);
-  delay(1000);
+ //**frame_buffer = frame_buffer_index? espp::EspBox::get().frame_buffer1():espp::EspBox::get().frame_buffer0();
+  frame_buffer = (uint8_t*)Driver::app->canvas->getFramebuffer();
 
   gwenesis_vdp_set_buffer(frame_buffer);
 
   initialized = true;
   //**reset_frame_time();
-  lilka::serial_log("init end");
 }
 
 void init_genesis(uint8_t *romdata, size_t rom_data_size) {
@@ -189,6 +188,7 @@ void init_genesis(uint8_t *romdata, size_t rom_data_size) {
 
 
 void /***IRAM_ATTR*/ run_genesis_rom() {
+
   auto start = esp_timer_get_time();
   // handle input here (see system.h and use input.pad and input.system)
   lilka::State state = lilka::controller.getState();
@@ -218,12 +218,13 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
       }
     }
 
-    lilka::serial_log("test");
-
   bool drawFrame = (frame_counter++ % frameskip) == 0;
 
   int lines_per_frame = REG1_PAL ? LINES_PER_FRAME_PAL : LINES_PER_FRAME_NTSC;
   int hint_counter = gwenesis_vdp_regs[10];
+
+  //lilka::serial_log("frame_counter = %d, drawFrame = %d, lines_per_frame = %d, drawFrame = %d",frame_counter, drawFrame, lines_per_frame, hint_counter);
+  //delay(10);
 
   screen_width = REG12_MODE_H40 ? 240 : 256;
   screen_height = REG1_PAL ? 280 : 224;
@@ -311,19 +312,15 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
   m68k.cycles -= system_clock;
 
   if (drawFrame) {
-    /*
     // copy the palette
     memcpy(palette, CRAM565, PALETTE_SIZE * sizeof(uint16_t));
     // set the palette
-    BoxEmu::get().palette(palette, PALETTE_SIZE);
+    memcpy(Driver::nesPalette, palette, PALETTE_SIZE * sizeof(uint16_t));
     // push the frame buffer to the display task
-    BoxEmu::get().push_frame(frame_buffer);
+    Driver::app->queueDraw();
     // ping pong the frame buffer
-    frame_buffer_index = !frame_buffer_index;
-    frame_buffer = frame_buffer_index
-      ? espp::EspBox::get().frame_buffer1()
-      : espp::EspBox::get().frame_buffer0();
-    */
+    //**frame_buffer_index = !frame_buffer_index;
+    //**frame_buffer = frame_buffer_index? espp::EspBox::get().frame_buffer1(): espp::EspBox::get().frame_buffer0();
     gwenesis_vdp_set_buffer(frame_buffer);
   }
 

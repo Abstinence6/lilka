@@ -1,5 +1,5 @@
 #include "nesapp.h"
-
+#include "genesisapp.h"
 extern "C" {
 #include <event.h>
 #include <gui.h>
@@ -16,7 +16,7 @@ extern "C" {
 
 class Driver {
 public:
-    static void setNesApp(NesApp* app);
+    static void setApp(App* app);
 
     static int init(int width, int height);
     static void shutdown();
@@ -36,5 +36,5 @@ public:
     static int64_t last_render;
     static int64_t last_frame_duration;
 
-    static NesApp* app;
+    static App* app;
 };
