@@ -15,12 +15,11 @@ GenesisApp::GenesisApp(String path) : App("GENESIS", 0, 0, lilka::display.width(
     lilka::serial_log("Free PSRAM: %d", ESP.getFreePsram());
     lilka::serial_log("Free Max Alloc Psram: %d", ESP.getMaxAllocPsram());
     
-    romfile = (uint8_t*)heap_caps_malloc(0x400000, MALLOC_CAP_SPIRAM);
-    //romfile = (unsigned char *)mem_alloc(0x600000 / 16, false);
+    romfile = (uint8_t*)heap_caps_malloc(0x600000, MALLOC_CAP_SPIRAM);
 
     FILE *fp;
     fp = fopen(argv[0], "rb");
-    size_t size = fread(romfile,  16, 0x400000 / 16, fp);
+    size_t size = fread(romfile,  16, 0x600000 / 16, fp);
     fclose(fp);
 
     Driver::setApp(this);
