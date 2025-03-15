@@ -187,7 +187,7 @@ void init_genesis(uint8_t *romdata, size_t rom_data_size) {
 }
 
 
-void /***IRAM_ATTR*/ run_genesis_rom() {
+void /*IRAM_ATTR*/ run_genesis_rom() {
 
   auto start = esp_timer_get_time();
   // handle input here (see system.h and use input.pad and input.system)
@@ -195,7 +195,7 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
   bool sound_enabled = false;//**bool sound_enabled = !espp::EspBox::get().is_muted();
 
   frameskip = sound_enabled ? full_frameskip : muted_frameskip;
-  /*
+
     // button mapping:
     // up, down, left, right, c, b, a, start
     // from gwenesis/src/io/gwenesis_io.c
@@ -217,7 +217,7 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
         gwenesis_io_pad_release_button(0, i);
       }
     }
-  */
+
   bool drawFrame = (frame_counter++ % frameskip) == 0;
 
   int lines_per_frame = REG1_PAL ? LINES_PER_FRAME_PAL : LINES_PER_FRAME_NTSC;
@@ -248,7 +248,7 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
   while (scan_line < lines_per_frame) {
     system_clock += _vdp_cycles_per_line;
 
-    //m68k_run(system_clock);
+    m68k_run(system_clock);
     z80_run(system_clock);
 
     /* Audio */

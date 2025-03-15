@@ -308,14 +308,20 @@ void m68k_run(unsigned int cycles)
     /* Decode next instruction */
     REG_IR = m68ki_read_imm_16();
 
-//    printf("PC=%x IR=%x CYCLES=%d \n",m68k.pc,REG_IR,CYC_INSTRUCTION[REG_IR]);
+    //printf("PC=%x IR=%x CYCLES=%d \n",m68k.pc,REG_IR,CYC_INSTRUCTION[REG_IR]);
 
-    /* Execute instruction */
-    m68ki_instruction_jump_table[REG_IR]();
-    USE_CYCLES(CYC_INSTRUCTION[REG_IR]);
-
-    /* Trace m68k_exception, if necessary */
-    m68ki_exception_if_trace(); /* auto-disable (see m68kcpu.h) */
+    if (REG_IR < 61376){
+      /* Execute instruction */
+      m68ki_instruction_jump_table[REG_IR]();
+      USE_CYCLES(CYC_INSTRUCTION[REG_IR]);
+      /* Trace m68k_exception, if necessary */
+      m68ki_exception_if_trace(); /* auto-disable (see m68kcpu.h) */
+    }
+    else
+    {
+      REG_IR--;
+      printf("Invalid instruction %x\n",REG_IR);
+    }
   }
 }
 
