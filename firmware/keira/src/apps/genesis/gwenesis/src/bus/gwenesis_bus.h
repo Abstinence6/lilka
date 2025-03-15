@@ -24,7 +24,7 @@ __license__ = "GPLv3"
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_ROM_SIZE 0x800000
+#define MAX_ROM_SIZE 0x600000
 #define MAX_RAM_SIZE 0x10000
 #define MAX_Z80_RAM_SIZE 8192
 
@@ -45,11 +45,11 @@ __license__ = "GPLv3"
 
 #define Z80_FREQ_DIVISOR 14     // Frequency divisor to Z80 clock
 #define VDP_CYCLES_PER_LINE 3420// VDP Cycles per Line
-#define SCREEN_WIDTH 320
+#define SCREEN_WIDTH 240
 
 #define AUDIO_FREQ_DIVISOR 1009
-#define GWENESIS_AUDIO_BUFFER_LENGTH_NTSC 888
-#define GWENESIS_AUDIO_BUFFER_LENGTH_PAL 1056
+#define GWENESIS_AUDIO_BUFFER_LENGTH_NTSC 60
+#define GWENESIS_AUDIO_BUFFER_LENGTH_PAL 60
 
 /* Audio buffer length */
 

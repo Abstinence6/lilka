@@ -195,7 +195,7 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
   bool sound_enabled = false;//**bool sound_enabled = !espp::EspBox::get().is_muted();
 
   frameskip = sound_enabled ? full_frameskip : muted_frameskip;
-
+  /*
     // button mapping:
     // up, down, left, right, c, b, a, start
     // from gwenesis/src/io/gwenesis_io.c
@@ -217,7 +217,7 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
         gwenesis_io_pad_release_button(0, i);
       }
     }
-
+  */
   bool drawFrame = (frame_counter++ % frameskip) == 0;
 
   int lines_per_frame = REG1_PAL ? LINES_PER_FRAME_PAL : LINES_PER_FRAME_NTSC;
@@ -248,7 +248,7 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
   while (scan_line < lines_per_frame) {
     system_clock += _vdp_cycles_per_line;
 
-    m68k_run(system_clock);
+    //m68k_run(system_clock);
     z80_run(system_clock);
 
     /* Audio */
@@ -317,6 +317,9 @@ void /***IRAM_ATTR*/ run_genesis_rom() {
     // set the palette
     memcpy(Driver::nesPalette, palette, PALETTE_SIZE * sizeof(uint16_t));
     // push the frame buffer to the display task
+    Driver::app->canvas->setCursor(80, Driver::app->canvas->height() - 4);
+    Driver::app->canvas->fillRect(80, Driver::app->canvas->height() - 20, 80, 20, lilka::colors::Black);
+    Driver::app->canvas->print(esp_timer_get_time());
     Driver::app->queueDraw();
     // ping pong the frame buffer
     //**frame_buffer_index = !frame_buffer_index;
